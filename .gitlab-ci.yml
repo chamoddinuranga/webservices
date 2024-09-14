@@ -1,0 +1,28 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_IMAGE_USER: $CI_REGISTRY_IMAGE/user-service:$CI_COMMIT_REF_SLUG
+  DOCKER_IMAGE_PRICE: $CI_REGISTRY_IMAGE/price-service:$CI_COMMIT_REF_SLUG
+
+build:
+  stage: build
+  script:
+    - docker build -t $DOCKER_IMAGE_USER ./user-service
+    - docker build -t $DOCKER_IMAGE_PRICE ./price-service
+    - docker push $DOCKER_IMAGE_USER
+    - docker push $DOCKER_IMAGE_PRICE
+
+test:
+  stage: test
+  script:
+    - docker run --rm $DOCKER_IMAGE_USER pytest ./user-service/tests/
+    - docker run --rm $DOCKER_IMAGE_PRICE pytest ./price-service/tests/
+
+deploy:
+  stage: deploy
+  script:
+    - kubectl apply -f kubernetes/user-service-deployment.yaml
+    - kubectl apply -f kubernetes/price-service-deployment.yaml
