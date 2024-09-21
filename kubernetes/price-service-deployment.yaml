@@ -2,8 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: price-service
+  labels:
+    app: price-service
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: price-service
@@ -16,17 +18,4 @@ spec:
       - name: price-service
         image: price-service:latest
         ports:
-        - containerPort: 5001
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: price-service
-spec:
-  selector:
-    app: price-service
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 5001
-  type: LoadBalancer
+        - containerPort: 80

@@ -22,4 +22,4 @@ def get_all_prices():
     return jsonify(cryptos)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001)
+    app.run(host="0.0.0.0", port=80)
